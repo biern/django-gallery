@@ -1,0 +1,9 @@
+- fields: {date: 2012-03-13, exif_available: false, exif_data: '', height: 302, image: admin/mana_energy_potion_sixpack_package.jpg,
+    public: true, user: 1, width: 400}
+  model: gallery.photo
+  pk: 1
+
+- fields: {date: 2012-03-13, exif_available: false, exif_data: '', height: 302, image: admin/mana_energy_potion_sixpack_package.jpg,
+    public: false, user: 1, width: 400}
+  model: gallery.photo
+  pk: 2

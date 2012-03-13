@@ -1,0 +1,133 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Models &mdash; django-gallery v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="django-gallery v0.1 documentation" href="index.html" />
+    <link rel="prev" title="Welcome to django-gallery’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to django-gallery’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">django-gallery v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-gallery.models">
+<span id="models"></span><h1>Models<a class="headerlink" href="#module-gallery.models" title="Permalink to this headline">¶</a></h1>
+<p>django-gallery provides default <a class="reference internal" href="#gallery.models.Photo" title="gallery.models.Photo"><tt class="xref py py-class docutils literal"><span class="pre">Photo</span></tt></a> model.</p>
+<dl class="class">
+<dt id="gallery.models.Photo">
+<em class="property">class </em><tt class="descclassname">gallery.models.</tt><tt class="descname">Photo</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/gallery/models.html#Photo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gallery.models.Photo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents user added image.</p>
+<p>Reads and saves image exif data if available (accessed with attrs
+<tt class="xref py py-attr docutils literal"><span class="pre">exif_available</span></tt>, <tt class="xref py py-attr docutils literal"><span class="pre">exif_data</span></tt>) and creates thumbnails
+according to <cite>THUMBNAIL_SIZES</cite></p>
+<dl class="method">
+<dt id="gallery.models.Photo.update_exif">
+<tt class="descname">update_exif</tt><big>(</big><em>image</em><big>)</big><a class="reference internal" href="_modules/gallery/models.html#Photo.update_exif"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gallery.models.Photo.update_exif" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update model exif data based on image.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="data">
+<dt id="gallery.models.THUMBNAIL_SIZES">
+<tt class="descclassname">gallery.models.</tt><tt class="descname">THUMBNAIL_SIZES</tt><a class="headerlink" href="#gallery.models.THUMBNAIL_SIZES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sizes of thumbs to generate when uploading an image</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gallery.models.upload_to">
+<tt class="descclassname">gallery.models.</tt><tt class="descname">upload_to</tt><big>(</big><em>instance</em>, <em>filename</em><big>)</big><a class="reference internal" href="_modules/gallery/models.html#upload_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gallery.models.upload_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates separate directory for every user&#8217;s gallery</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to django-gallery&#8217;s documentation!</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/models.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to django-gallery’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">django-gallery v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Marcin Biernat.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

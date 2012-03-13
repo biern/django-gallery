@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block head_extra %}
+<script src="{{ STATIC_URL }}js/jquery.Jcrop.min.js"></script>
+<script src="{{ STATIC_URL }}js/crop_image.js"></script>
+<link rel="stylesheet" href="{{ STATIC_URL }}css/jquery.Jcrop.css" type="text/css" />
+{% endblock %}
+
+{% block content %}
+
+<img id="photo-edit" src="{{ photo.image.url }}"/>
+
+<form method="POST" action=".">
+  {# Tutaj powinna być foremka zdefiniowana z poziomu django z widgetem z określonym js i css zamiast hardkodowania linków w htmlu #}
+  {% csrf_token %}
+  <p> Zaznacz obszar na obrazie aby przyciąć
+  <input name="coords" type="text" value="" />
+  <input type="submit" name="crop" value="przytnij" />
+</form>
+
+<form enctype="multipart/form-data" method="POST" action=".">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit"/>
+</form>
+
+<script>
+</script>
+
+{% endblock %}

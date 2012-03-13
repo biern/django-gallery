@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Publiczna galeria użytkownika {{ user }}</h1>
+{% include "gallery/photo_list_inline.html" %}
+{% endblock %}

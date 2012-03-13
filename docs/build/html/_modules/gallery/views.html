@@ -1,0 +1,211 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>gallery.views &mdash; django-gallery v0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="django-gallery v0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">django-gallery v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for gallery.views</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.decorators</span> <span class="kn">import</span> <span class="n">login_required</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">django.core.urlresolvers</span> <span class="kn">import</span> <span class="n">reverse</span>
+<span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">get_object_or_404</span>
+<span class="kn">from</span> <span class="nn">django.utils.decorators</span> <span class="kn">import</span> <span class="n">method_decorator</span>
+<span class="kn">from</span> <span class="nn">django.views.generic</span> <span class="kn">import</span> <span class="n">ListView</span>
+<span class="kn">from</span> <span class="nn">django.views.generic.edit</span> <span class="kn">import</span> <span class="n">CreateView</span><span class="p">,</span> <span class="n">UpdateView</span>
+
+<span class="kn">from</span> <span class="nn">gallery.models</span> <span class="kn">import</span> <span class="n">Photo</span>
+<span class="kn">from</span> <span class="nn">gallery.forms</span> <span class="kn">import</span> <span class="n">PhotoAddForm</span><span class="p">,</span> <span class="n">PhotoEditForm</span>
+<span class="kn">from</span> <span class="nn">gallery</span> <span class="kn">import</span> <span class="n">utils</span>
+
+
+<span class="k">class</span> <span class="nc">UserGalleryBase</span><span class="p">(</span><span class="n">ListView</span><span class="p">):</span>
+    <span class="n">context_object_name</span> <span class="o">=</span> <span class="s">&#39;photo_list&#39;</span>
+
+
+<div class="viewcode-block" id="UserOwnGallery"><a class="viewcode-back" href="../../views.html#gallery.views.UserOwnGallery">[docs]</a><span class="k">class</span> <span class="nc">UserOwnGallery</span><span class="p">(</span><span class="n">UserGalleryBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Shows currently logged in user his/her gallery.</span>
+<span class="sd">    Private photos are shown as well.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;gallery/user_own_gallery.html&#39;</span>
+
+    <span class="nd">@method_decorator</span><span class="p">(</span><span class="n">login_required</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">UserOwnGallery</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Photo</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="UserGallery"><a class="viewcode-back" href="../../views.html#gallery.views.UserGallery">[docs]</a><span class="k">class</span> <span class="nc">UserGallery</span><span class="p">(</span><span class="n">UserGalleryBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Shows user&#39;s public gallery</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;gallery/user_gallery.html&#39;</span>
+
+    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">get_object_or_404</span><span class="p">(</span><span class="n">User</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;username&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">Photo</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">,</span> <span class="n">public</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="PhotoAddFormView"><a class="viewcode-back" href="../../views.html#gallery.views.PhotoAddFormView">[docs]</a><span class="k">class</span> <span class="nc">PhotoAddFormView</span><span class="p">(</span><span class="n">CreateView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Shows form for adding new photo</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">PhotoAddForm</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Photo</span>
+
+    <span class="k">def</span> <span class="nf">form_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">form</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">object</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">commit</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">&#39;gallery-user&#39;</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="CropImageMixin"><a class="viewcode-back" href="../../views.html#gallery.views.CropImageMixin">[docs]</a><span class="k">class</span> <span class="nc">CropImageMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Provieds cropping methods.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CropImageMixin.is_crop"><a class="viewcode-back" href="../../views.html#gallery.views.CropImageMixin.is_crop">[docs]</a>    <span class="k">def</span> <span class="nf">is_crop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return True if request seems to be crop request.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;crop&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;coords&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="CropImageMixin.crop_photo"><a class="viewcode-back" href="../../views.html#gallery.views.CropImageMixin.crop_photo">[docs]</a>    <span class="k">def</span> <span class="nf">crop_photo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">photo</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Crops photo according to data stored in POST (uses &#39;coords&#39; key)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">img</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">cropped_django_image</span><span class="p">(</span>
+            <span class="n">photo</span><span class="o">.</span><span class="n">image</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;coords&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)))</span>
+        <span class="n">photo</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">img</span>
+        <span class="n">photo</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+</div></div>
+<div class="viewcode-block" id="PhotoEditFormView"><a class="viewcode-back" href="../../views.html#gallery.views.PhotoEditFormView">[docs]</a><span class="k">class</span> <span class="nc">PhotoEditFormView</span><span class="p">(</span><span class="n">CropImageMixin</span><span class="p">,</span> <span class="n">UpdateView</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Provieds basic photo editing options, also handles crop requests.</span>
+<span class="sd">    On successful edit returns to gallery view.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">PhotoEditForm</span>
+    <span class="n">context_object_name</span> <span class="o">=</span> <span class="s">&#39;photo&#39;</span>
+    <span class="n">template_name</span> <span class="o">=</span> <span class="s">&#39;gallery/photo_form_edit.html&#39;</span>
+
+    <span class="nd">@method_decorator</span><span class="p">(</span><span class="n">login_required</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">request</span> <span class="o">=</span> <span class="n">request</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">object</span> <span class="o">=</span> <span class="n">obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_crop</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">crop_photo</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s">&#39;gallery-photo-edit&#39;</span><span class="p">,</span> <span class="n">obj</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">PhotoEditFormView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span>\
+          <span class="n">dispatch</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PhotoEditFormView.get_queryset"><a class="viewcode-back" href="../../views.html#gallery.views.PhotoEditFormView.get_queryset">[docs]</a>    <span class="k">def</span> <span class="nf">get_queryset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Filter by logged in user</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">Photo</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span>
+            <span class="n">user</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="PhotoEditFormView.get_success_url"><a class="viewcode-back" href="../../views.html#gallery.views.PhotoEditFormView.get_success_url">[docs]</a>    <span class="k">def</span> <span class="nf">get_success_url</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return to gallery on success</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">reverse</span><span class="p">(</span><span class="s">&#39;gallery-user&#39;</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">django-gallery v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Marcin Biernat.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

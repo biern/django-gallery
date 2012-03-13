@@ -1,0 +1,189 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Views &mdash; django-gallery v0.1 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="django-gallery v0.1 documentation" href="index.html" />
+    <link rel="next" title="Forms" href="forms.html" />
+    <link rel="prev" title="Models" href="models.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="forms.html" title="Forms"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="models.html" title="Models"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">django-gallery v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-gallery.views">
+<span id="views"></span><h1>Views<a class="headerlink" href="#module-gallery.views" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="gallery.views.CropImageMixin">
+<em class="property">class </em><tt class="descclassname">gallery.views.</tt><tt class="descname">CropImageMixin</tt><a class="reference internal" href="_modules/gallery/views.html#CropImageMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gallery.views.CropImageMixin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provieds cropping methods.</p>
+<dl class="method">
+<dt id="gallery.views.CropImageMixin.crop_photo">
+<tt class="descname">crop_photo</tt><big>(</big><em>photo</em><big>)</big><a class="reference internal" href="_modules/gallery/views.html#CropImageMixin.crop_photo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gallery.views.CropImageMixin.crop_photo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Crops photo according to data stored in POST (uses &#8216;coords&#8217; key)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gallery.views.CropImageMixin.is_crop">
+<tt class="descname">is_crop</tt><big>(</big><em>request</em><big>)</big><a class="reference internal" href="_modules/gallery/views.html#CropImageMixin.is_crop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gallery.views.CropImageMixin.is_crop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if request seems to be crop request.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gallery.views.PhotoAddFormView">
+<em class="property">class </em><tt class="descclassname">gallery.views.</tt><tt class="descname">PhotoAddFormView</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/gallery/views.html#PhotoAddFormView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gallery.views.PhotoAddFormView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows form for adding new photo</p>
+<dl class="attribute">
+<dt id="gallery.views.PhotoAddFormView.form_class">
+<tt class="descname">form_class</tt><a class="headerlink" href="#gallery.views.PhotoAddFormView.form_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">PhotoAddForm</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="gallery.views.PhotoAddFormView.model">
+<tt class="descname">model</tt><a class="headerlink" href="#gallery.views.PhotoAddFormView.model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">Photo</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gallery.views.PhotoEditFormView">
+<em class="property">class </em><tt class="descclassname">gallery.views.</tt><tt class="descname">PhotoEditFormView</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/gallery/views.html#PhotoEditFormView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gallery.views.PhotoEditFormView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provieds basic photo editing options, also handles crop requests.
+On successful edit returns to gallery view.</p>
+<dl class="attribute">
+<dt id="gallery.views.PhotoEditFormView.form_class">
+<tt class="descname">form_class</tt><a class="headerlink" href="#gallery.views.PhotoEditFormView.form_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">PhotoEditForm</span></tt></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gallery.views.PhotoEditFormView.get_queryset">
+<tt class="descname">get_queryset</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/gallery/views.html#PhotoEditFormView.get_queryset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gallery.views.PhotoEditFormView.get_queryset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter by logged in user</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gallery.views.PhotoEditFormView.get_success_url">
+<tt class="descname">get_success_url</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/gallery/views.html#PhotoEditFormView.get_success_url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gallery.views.PhotoEditFormView.get_success_url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return to gallery on success</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gallery.views.UserGallery">
+<em class="property">class </em><tt class="descclassname">gallery.views.</tt><tt class="descname">UserGallery</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/gallery/views.html#UserGallery"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gallery.views.UserGallery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows user&#8217;s public gallery</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="gallery.views.UserOwnGallery">
+<em class="property">class </em><tt class="descclassname">gallery.views.</tt><tt class="descname">UserOwnGallery</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/gallery/views.html#UserOwnGallery"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gallery.views.UserOwnGallery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shows currently logged in user his/her gallery.
+Private photos are shown as well.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="models.html"
+                        title="previous chapter">Models</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="forms.html"
+                        title="next chapter">Forms</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/views.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="forms.html" title="Forms"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="models.html" title="Models"
+             >previous</a> |</li>
+        <li><a href="index.html">django-gallery v0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Marcin Biernat.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

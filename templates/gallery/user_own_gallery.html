@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Moja galeria</h1>
+{% include "gallery/photo_list_inline.html" with own=1 %}
+<a href="{% url gallery-user user %}"> zobacz publiczną galerię </a>
+{% endblock %}

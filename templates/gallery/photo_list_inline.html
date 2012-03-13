@@ -1,0 +1,13 @@
+{% for photo in photo_list %}
+<div>
+  <img src="{{ photo.image.url_100x100 }}"/>
+
+  <p>exif dostępny: {{ photo.exif_available|yesno:"tak,nie" }}
+  <p>rozmiar: {{ photo.width }} x {{ photo.height }}
+  {% if own %}
+  <p>publiczne: {{ photo.public|yesno:"tak,nie" }}
+  <p><a href="{% url gallery-photo-edit photo.id %}">edytuj</a>
+  {% endif %}
+</div>
+
+{% endfor %}

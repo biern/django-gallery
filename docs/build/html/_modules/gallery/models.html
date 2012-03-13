@@ -1,0 +1,169 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>gallery.models &mdash; django-gallery v0.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="django-gallery v0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">django-gallery v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for gallery.models</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">django-gallery provides default :class:`Photo` model.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">pyexiv2</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.models</span> <span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">thumbs</span> <span class="kn">import</span> <span class="n">ImageWithThumbsField</span>
+
+
+<span class="n">THUMBNAIL_SIZES</span> <span class="o">=</span> <span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">),)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Sizes of thumbs to generate when uploading an image</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="upload_to"><a class="viewcode-back" href="../../models.html#gallery.models.upload_to">[docs]</a><span class="k">def</span> <span class="nf">upload_to</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates separate directory for every user&#39;s gallery</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s">&quot;{}/{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">instance</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="Photo"><a class="viewcode-back" href="../../models.html#gallery.models.Photo">[docs]</a><span class="k">class</span> <span class="nc">Photo</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents user added image.</span>
+
+<span class="sd">    Reads and saves image exif data if available (accessed with attrs</span>
+<span class="sd">    :attr:`exif_available`, :attr:`exif_data`) and creates thumbnails</span>
+<span class="sd">    according to `THUMBNAIL_SIZES`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">user</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">ForeignKey</span><span class="p">(</span><span class="n">User</span><span class="p">)</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateField</span><span class="p">(</span><span class="s">&#39;Czas dodania&#39;</span><span class="p">,</span> <span class="n">auto_now_add</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="s">&#39;Szerokość&#39;</span><span class="p">)</span>
+    <span class="n">height</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">IntegerField</span><span class="p">(</span><span class="s">&#39;Wysokość&#39;</span><span class="p">)</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="n">ImageWithThumbsField</span><span class="p">(</span>
+        <span class="s">&#39;Obraz&#39;</span><span class="p">,</span> <span class="n">upload_to</span><span class="o">=</span><span class="n">upload_to</span><span class="p">,</span>
+        <span class="n">height_field</span><span class="o">=</span><span class="s">&#39;height&#39;</span><span class="p">,</span> <span class="n">width_field</span><span class="o">=</span><span class="s">&#39;width&#39;</span><span class="p">,</span>
+        <span class="n">sizes</span><span class="o">=</span><span class="n">THUMBNAIL_SIZES</span><span class="p">)</span>
+    <span class="n">public</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="s">&#39;Publiczny&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="n">exif_available</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">BooleanField</span><span class="p">(</span><span class="s">&#39;exif dostępny&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">exif_data</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span><span class="s">&#39;informacje exif&#39;</span><span class="p">,</span> <span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">ordering</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;date&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c"># 2x save, pewnie da się zrobić to lepiej, ale czasu brak :-(</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Photo</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_exif</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Photo</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span>
+
+    <span class="c"># TODO: Może kiedyś</span>
+    <span class="c"># @models.permalink</span>
+    <span class="c"># def get_absolute_url(self):</span>
+    <span class="c">#     return (&#39;gallery-photo&#39;, [self.id])</span>
+
+<div class="viewcode-block" id="Photo.update_exif"><a class="viewcode-back" href="../../models.html#gallery.models.Photo.update_exif">[docs]</a>    <span class="k">def</span> <span class="nf">update_exif</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">image</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update model exif data based on image.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">MEDIA_ROOT</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">image</span><span class="p">))</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pyexiv2</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">ImageMetadata</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exif_data</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">exif_keys</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exif_data</span> <span class="o">+=</span> <span class="s">&quot;{}: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">exif_data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">exif_available</span> <span class="o">=</span> <span class="bp">True</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" size="18" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">django-gallery v0.1 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Marcin Biernat.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.0.7.
+    </div>
+  </body>
+</html>

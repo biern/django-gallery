@@ -13,6 +13,7 @@ def cropped_django_image(image, area):
     :area: tuple (x, y, w, h)
     """
 
+    area = (area[0], area[1], area[0] + area[2], area[1] + area[3])
     img = pil.open(image).crop(area)
     img_io = StringIO.StringIO()
     img.save(img_io, format='JPEG')

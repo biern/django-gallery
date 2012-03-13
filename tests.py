@@ -101,7 +101,7 @@ class TestFormViews(GalleryTestCase):
 
         photo_id = 1
 
-        post_dict = {'crop': 'true', 'coords': '100,100,150,150' }
+        post_dict = {'crop': 'true', 'coords': '100,100,50,50' }
         self.login_user()
         self.client.post(reverse('gallery-photo-edit',
                                   args=[photo_id]), post_dict)

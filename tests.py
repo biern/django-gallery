@@ -24,6 +24,8 @@ PATH_GRODEK = os.path.join(os.path.abspath(os.path.dirname(__file__)),
 
 class GalleryTestCase(TestCase):
     urls = 'gallery.urls'
+    # Fixtures tak łatwo nie przejdą, obrazy wszukiwane są w site_media,
+    # które w apce trudno jest t
     # fixtures = ['images.yaml']
 
     def login_user(self):
@@ -33,9 +35,11 @@ class GalleryTestCase(TestCase):
         # Typowy użytkownik, nick admin nic nie znaczy
         self.admin = User.objects.create_user(
             username='admin', password='admin', email='admin@admin.admin')
+        # Tworzenie zdjęć ręcznie zamiast używania fixtures - muszę zostać
+        # zuploadowane do odpowiedniego katalogu
         self.photo_mana = Photo(user=self.admin,
                                 image=ImageFile(open(PATH_MANA, 'rb')),
-                                public=True)
+                                public=False)
         self.photo_mana.save()
         self.photo_grodek = Photo(user=self.admin,
                                   image=ImageFile(open(PATH_GRODEK, 'rb')),
